@@ -13,6 +13,7 @@ import { TabsService } from './services/tabs.service'
 import { HotkeysService } from './services/hotkeys.service'
 import { PromptModalComponent } from './components/promptModal.component'
 import { SplitLayoutProfilesService } from './profiles'
+import { ConfigService } from './services/config.service'
 import { TAB_COLORS } from './utils'
 
 /** @hidden */
@@ -106,6 +107,7 @@ export class CommonOptionsContextMenu extends TabContextMenuItemProvider {
         private app: AppService,
         private ngbModal: NgbModal,
         private splitLayoutProfilesService: SplitLayoutProfilesService,
+        private config: ConfigService,
         private translate: TranslateService,
     ) {
         super()
@@ -131,7 +133,15 @@ export class CommonOptionsContextMenu extends TabContextMenuItemProvider {
             })
         }
         if (tabHeader) {
-            const currentColor = TAB_COLORS.find(x => x.value === tab.color)?.name
+            const configuredTabColors = this.config.store.appearance.customTabColors
+            const customTabColors = Array.isArray(configuredTabColors)
+                ? configuredTabColors.filter(color =>
+                    typeof color?.name === 'string' && !!color.name.trim() &&
+                    typeof color?.value === 'string' && /^#[\da-f]{6}$/i.test(color.value),
+                )
+                : []
+            const tabColors = [...TAB_COLORS, ...customTabColors]
+            const currentColor = tabColors.find(x => x.value === tab.color)?.name
             items = [
                 ...items,
                 {
@@ -157,7 +167,7 @@ export class CommonOptionsContextMenu extends TabContextMenuItemProvider {
                     label: this.translate.instant('Color'),
                     commandLabel: this.translate.instant('Change tab color'),
                     sublabel: currentColor ? this.translate.instant(currentColor) : undefined,
-                    submenu: TAB_COLORS.map(color => ({
+                    submenu: tabColors.map(color => ({
                         label: this.translate.instant(color.name) ?? color.name,
                         type: 'radio',
                         checked: tab.color === color.value,
