@@ -1,6 +1,7 @@
 accessibility:
   animations: true
 appearance:
+  customTabColors: []
   dock: off
   dockScreen: current
   dockFill: 0.5
