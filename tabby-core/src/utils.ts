@@ -1,6 +1,5 @@
 import * as os from 'os'
 import { NgZone } from '@angular/core'
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker'
 export { TAB_COLORS } from './tabColors'
 
 export const WIN_BUILD_CONPTY_SUPPORTED = 17692
