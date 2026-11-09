@@ -38,7 +38,7 @@ export function getTabColors (customColors: unknown): TabColor[] {
 
         const color = candidate as Record<string, unknown>
         if (typeof color.name !== 'string' || !color.name.trim() ||
-            typeof color.value !== 'string' || !/^#[\\da-f]{6}$/i.test(color.value)) {
+            typeof color.value !== 'string' || !/^#[\da-f]{6}$/i.test(color.value)) {
             continue
         }
 
