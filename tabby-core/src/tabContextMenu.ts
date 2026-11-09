@@ -14,7 +14,7 @@ import { HotkeysService } from './services/hotkeys.service'
 import { PromptModalComponent } from './components/promptModal.component'
 import { SplitLayoutProfilesService } from './profiles'
 import { ConfigService } from './services/config.service'
-import { TAB_COLORS } from './utils'
+import { getTabColors } from './tabColors'
 
 /** @hidden */
 @Injectable()
@@ -133,14 +133,7 @@ export class CommonOptionsContextMenu extends TabContextMenuItemProvider {
             })
         }
         if (tabHeader) {
-            const configuredTabColors = this.config.store.appearance.customTabColors
-            const customTabColors = Array.isArray(configuredTabColors)
-                ? configuredTabColors.filter(color =>
-                    typeof color?.name === 'string' && !!color.name.trim() &&
-                    typeof color?.value === 'string' && /^#[\da-f]{6}$/i.test(color.value),
-                )
-                : []
-            const tabColors = [...TAB_COLORS, ...customTabColors]
+            const tabColors = getTabColors(this.config.store.appearance?.customTabColors)
             const currentColor = tabColors.find(x => x.value === tab.color)?.name
             items = [
                 ...items,
